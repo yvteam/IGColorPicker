@@ -32,7 +32,7 @@ class BrandColorViewController: UIViewController, ColorPickerViewDelegate, Color
         colorPickerView.isSelectedColorTappable = false
         colorPickerView.preselectedIndex = colorPickerView.colors.indices.first
         
-        selectedColorView.backgroundColor = colorPickerView.colors.first
+        selectedColorView.backgroundColor = colorPickerView.colors.first?.first
         
     }
     
@@ -44,7 +44,7 @@ class BrandColorViewController: UIViewController, ColorPickerViewDelegate, Color
     // MARK: - ColorPickerViewDelegate
     
     func colorPickerView(_ colorPickerView: ColorPickerView, didSelectItemAt indexPath: IndexPath) {
-        self.selectedColorView.backgroundColor = colorPickerView.colors[indexPath.item]
+        self.selectedColorView.backgroundColor = colorPickerView.colors[indexPath.item].first
     }
     
     // MARK: - ColorPickerViewDelegateFlowLayout

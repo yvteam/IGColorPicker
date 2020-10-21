@@ -20,6 +20,23 @@ class ColorPickerCell: UICollectionViewCell {
     /// The checkbox use to show the tip on the cell
     var checkbox = M13Checkbox()
     
+    lazy var gradientLayer: CAGradientLayer = {
+        var l = CAGradientLayer()
+        l.frame = self.bounds
+        self.layer.insertSublayer(l, at: 0)
+        return l
+    }()
+    
+    var colors: [UIColor] = [] {
+        didSet {
+            if colors.count == 1 {
+                gradientLayer.backgroundColor = colors.first?.cgColor
+            } else {
+                gradientLayer.colors = colors.map({$0.cgColor})
+            }
+        }
+    }
+    
     //MARK: - Initializer
     
     init() {
@@ -34,6 +51,11 @@ class ColorPickerCell: UICollectionViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = self.bounds
     }
     
     // MARK: - Private methods
