@@ -12,7 +12,7 @@ import Foundation
 
 @objc public protocol ColorPickerViewDelegate: class {
     
-    func colorPickerView(_ colorPickerView: ColorPickerView, didSelectItemAt indexPath: IndexPath)
+    func colorPickerView(_ colorPickerView: ColorPickerView, didSelectItemAt indexPath: IndexPath, startPoint: CGPoint, endPoint: CGPoint)
     
     @objc optional func colorPickerView(_ colorPickerView: ColorPickerView, didDeselectItemAt indexPath: IndexPath)
     

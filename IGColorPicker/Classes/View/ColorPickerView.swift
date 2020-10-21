@@ -80,6 +80,9 @@ open class ColorPickerView: UIView, UICollectionViewDelegate, UICollectionViewDa
     /// Style applied when a color is selected
     open var selectionStyle: ColorPickerViewSelectStyle = .check
     
+    var selectedIndexPath: IndexPath?
+    var currentStartPoint: CGPoint?
+    
     // MARK: - Private properties
     
     fileprivate var _indexOfSelectedColor: Int?
@@ -144,8 +147,52 @@ open class ColorPickerView: UIView, UICollectionViewDelegate, UICollectionViewDa
             
         }
         
-        delegate?.colorPickerView(self, didSelectItemAt: indexPath)
+        var startPoint = CGPoint.zero
+        var endPoint = CGPoint.zero
+        if selectedIndexPath == indexPath {
+            startPoint = nextPoint(currentStartPoint)
+        } else {
+            startPoint = nextPoint(nil)
+        }
+        endPoint = getEndPoint(startPoint)
+        
+        delegate?.colorPickerView(self, didSelectItemAt: indexPath, startPoint: startPoint, endPoint: endPoint)
+        
+        selectedIndexPath = indexPath
     
+    }
+    
+    func nextPoint(_ point: CGPoint?) -> CGPoint {
+        guard let p = point else {
+            return CGPoint(x: 0.5, y: 0)
+        }
+        switch p {
+        case CGPoint(x: 0.5, y: 0):
+            return CGPoint(x: 0, y: 0)
+        case CGPoint(x: 0, y: 0):
+            return CGPoint(x: 0, y: 0.5)
+        case CGPoint(x: 0, y: 0.5):
+            return CGPoint(x: 1, y: 0)
+        case CGPoint(x: 1, y: 0):
+            return CGPoint(x: 0.5, y: 0)
+        default:
+            return CGPoint(x: 0.5, y: 0)
+        }
+    }
+    
+    func getEndPoint(_ point: CGPoint) -> CGPoint {
+        switch point {
+        case CGPoint(x: 0.5, y: 0):
+            return CGPoint(x: 0.5, y: 1)
+        case CGPoint(x: 0, y: 0):
+            return CGPoint(x: 1, y: 1)
+        case CGPoint(x: 0, y: 0.5):
+            return CGPoint(x: 1, y: 0.5)
+        case CGPoint(x: 1, y: 0):
+            return CGPoint(x: 0, y: 1)
+        default:
+            return CGPoint(x: 0.5, y: 1)
+        }
     }
     
     // MARK: - Public Methods

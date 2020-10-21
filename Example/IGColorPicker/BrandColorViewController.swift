@@ -43,7 +43,7 @@ class BrandColorViewController: UIViewController, ColorPickerViewDelegate, Color
     
     // MARK: - ColorPickerViewDelegate
     
-    func colorPickerView(_ colorPickerView: ColorPickerView, didSelectItemAt indexPath: IndexPath) {
+    func colorPickerView(_ colorPickerView: ColorPickerView, didSelectItemAt indexPath: IndexPath, startPoint: CGPoint, endPoint: CGPoint) {
         self.selectedColorView.backgroundColor = colorPickerView.colors[indexPath.item].first
     }
     
