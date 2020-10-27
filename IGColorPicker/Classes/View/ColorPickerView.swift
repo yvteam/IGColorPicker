@@ -25,7 +25,7 @@ open class ColorPickerView: UIView, UICollectionViewDelegate, UICollectionViewDa
     // MARK: - Open properties
     
     /// Array of UIColor you want to show in the color picker
-    open var colors: [Array<UIColor>] = [
+    @objc open var colors: [Array<UIColor>] = [
        [#colorLiteral(red: 1, green: 0.5411764706, blue: 0.5019607843, alpha: 1)],
         [#colorLiteral(red: 1, green: 0.09019607843, blue: 0.2666666667, alpha: 1)],
         [#colorLiteral(red: 0.8352941176, green: 0, blue: 0, alpha: 1)],
@@ -45,13 +45,14 @@ open class ColorPickerView: UIView, UICollectionViewDelegate, UICollectionViewDa
             if colors.isEmpty {
                 fatalError("ERROR ColorPickerView - You must set at least 1 color!")
             }
+            collectionView.reloadData()
         }
     }
     /// The object that acts as the layout delegate for the color picker
     open weak var layoutDelegate: ColorPickerViewDelegateFlowLayout?
     /// The object that acts as the delegate for the color picker
-    open weak var delegate: ColorPickerViewDelegate?
-    /// The index of the selected color in the color picker 
+    @objc open weak var delegate: ColorPickerViewDelegate?
+    /// The index of the selected color in the color picker
     open var indexOfSelectedColor: Int? {
         return _indexOfSelectedColor
     }
