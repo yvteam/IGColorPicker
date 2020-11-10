@@ -30,6 +30,7 @@ class ColorPickerCell: UICollectionViewCell {
     var colors: [UIColor] = [] {
         didSet {
             if colors.count == 1 {
+                gradientLayer.colors = nil
                 gradientLayer.backgroundColor = colors.first?.cgColor
             } else {
                 gradientLayer.colors = colors.map({$0.cgColor})
