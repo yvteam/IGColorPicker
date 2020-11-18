@@ -1,23 +1,16 @@
 PODS:
-  - IGColorPicker (0.4.3):
-    - M13Checkbox
-  - M13Checkbox (3.4.0)
+  - IGColorPicker (0.4.3)
 
 DEPENDENCIES:
   - IGColorPicker (from `../`)
-
-SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - M13Checkbox
 
 EXTERNAL SOURCES:
   IGColorPicker:
     :path: "../"
 
 SPEC CHECKSUMS:
-  IGColorPicker: f6034f8629aa90cce308a76ecc0fdf2afed0bf34
-  M13Checkbox: 6f59404540ac98ba83a3d1afac335895a40c6a5d
+  IGColorPicker: 0445c8b7316b90d22f8d2cf6cf57aa42a8f8a14f
 
 PODFILE CHECKSUM: 4ebb9ec0d26d8739b0c18dc9faaa5462d18e8245
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0

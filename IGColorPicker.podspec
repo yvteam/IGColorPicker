@@ -17,5 +17,4 @@ s.ios.deployment_target = '8.3'
 
 s.source_files = 'IGColorPicker/Classes/**/*'
 
-s.dependency 'M13Checkbox'
 end

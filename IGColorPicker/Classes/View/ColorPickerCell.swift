@@ -9,7 +9,194 @@
 //
 
 import UIKit
-import M13Checkbox
+
+enum CheckState: Int {
+    case uncheck = 0
+    case check = 1
+    case topLeftToBottomRight = 2
+    case leftToRight = 3
+    case topRightToBottomLeft = 5
+    
+    func startPoint() -> CGPoint {
+        switch self {
+        case .check:
+            return CGPoint(x: 0.5, y: 0)
+        case .topLeftToBottomRight:
+            return CGPoint(x: 0, y: 0)
+        case .leftToRight:
+            return CGPoint(x: 0, y: 0.5)
+        case .topRightToBottomLeft:
+            return CGPoint(x: 1, y: 0)
+        default:
+            return CGPoint(x: 0.5, y: 0)
+        }
+    }
+    
+    
+    
+    func endPoint() -> CGPoint {
+        switch self {
+        case .check:
+            return CGPoint(x: 0.5, y: 1)
+        case .topLeftToBottomRight:
+            return CGPoint(x: 1, y: 1)
+        case .leftToRight:
+            return CGPoint(x: 1, y: 0.5)
+        case .topRightToBottomLeft:
+            return CGPoint(x: 0, y: 1)
+        default:
+            return CGPoint(x: 0.5, y: 1)
+        }
+    }
+    
+    func nextState() -> CheckState {
+        switch self {
+        case .check:
+            return .topLeftToBottomRight
+        case .topLeftToBottomRight:
+            return .leftToRight
+        case .leftToRight:
+            return .topRightToBottomLeft
+        case .topRightToBottomLeft:
+            return .check
+        default:
+            return .check
+        }
+    }
+}
+
+class CheckView: UIView {
+    var state: CheckState = .uncheck {
+        didSet {
+            self.setNeedsDisplay()
+        }
+    }
+    
+    var colorCount = 1
+    
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        
+        if colorCount == 1 && state != .uncheck {
+            let path = UIBezierPath()
+            path.move(to: CGPoint(x: rect.width * 0.25, y: rect.height * 0.25))
+            path.addLine(to: CGPoint(x: rect.width * 0.5, y: rect.height * 0.5))
+            path.addLine(to: CGPoint(x: rect.width, y: 0))
+            path.lineCapStyle = .round
+            path.lineJoinStyle = .round
+            path.apply(CGAffineTransform.init(translationX: -5, y: 15))
+            path.lineWidth = 5
+            UIColor.init(white: 0, alpha: 0.3).set()
+            path.stroke()
+            path.lineWidth = 3
+            UIColor.white.set()
+            path.stroke()
+            return
+        }
+                
+        switch state {
+        case .uncheck:
+            return
+        case .check:
+            let path = UIBezierPath()
+            path.lineCapStyle = .round
+            path.lineJoinStyle = .round
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5, y: rect.height * 0.5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5, y: rect.height * 0.5 - 5))
+            
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5 - 5, y: rect.height * 0.5 - 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5 - 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5 - 5 - 5))
+            
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5 + 5, y: rect.height * 0.5 + 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 + 5, y: rect.height * 0.5 + 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 + 5, y: rect.height * 0.5 - 5 + 5))
+            
+            path.apply(CGAffineTransform(translationX: -rect.width * 0.5, y: -rect.height * 0.5))
+            path.apply(CGAffineTransform(rotationAngle: .pi / 4.0))
+            path.apply(CGAffineTransform(translationX: rect.width * 0.5, y: rect.height * 0.5))
+            path.lineWidth = 5
+            UIColor.init(white: 0, alpha: 0.3).set()
+            path.stroke()
+            path.lineWidth = 3
+            UIColor.white.set()
+            path.stroke()
+        case .topLeftToBottomRight:
+            let path = UIBezierPath()
+            path.lineCapStyle = .round
+            path.lineJoinStyle = .round
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5, y: rect.height * 0.5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5, y: rect.height * 0.5 - 5))
+            
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5 - 5, y: rect.height * 0.5 - 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5 - 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5 - 5 - 5))
+            
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5 + 5, y: rect.height * 0.5 + 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 + 5, y: rect.height * 0.5 + 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 + 5, y: rect.height * 0.5 - 5 + 5))
+            
+            path.lineWidth = 5
+            UIColor.init(white: 0, alpha: 0.3).set()
+            path.stroke()
+            path.lineWidth = 3
+            UIColor.white.set()
+            path.stroke()
+        case .leftToRight:
+            let path = UIBezierPath()
+            path.lineCapStyle = .round
+            path.lineJoinStyle = .round
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5, y: rect.height * 0.5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5, y: rect.height * 0.5 - 5))
+            
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5 - 5, y: rect.height * 0.5 - 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5 - 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5 - 5 - 5))
+            
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5 + 5, y: rect.height * 0.5 + 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 + 5, y: rect.height * 0.5 + 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 + 5, y: rect.height * 0.5 - 5 + 5))
+            
+            path.apply(CGAffineTransform(translationX: -rect.width * 0.5, y: -rect.height * 0.5))
+            path.apply(CGAffineTransform(rotationAngle: .pi / 4.0 * -1 ))
+            path.apply(CGAffineTransform(translationX: rect.width * 0.5, y: rect.height * 0.5))
+            path.lineWidth = 5
+            UIColor.init(white: 0, alpha: 0.3).set()
+            path.stroke()
+            path.lineWidth = 3
+            UIColor.white.set()
+            path.stroke()
+        case .topRightToBottomLeft:
+            let path = UIBezierPath()
+            path.lineCapStyle = .round
+            path.lineJoinStyle = .round
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5, y: rect.height * 0.5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5, y: rect.height * 0.5 - 5))
+            
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5 - 5, y: rect.height * 0.5 - 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5 - 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 - 5, y: rect.height * 0.5 - 5 - 5))
+            
+            path.move(to: CGPoint(x: rect.width * 0.5 - 5 + 5, y: rect.height * 0.5 + 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 + 5, y: rect.height * 0.5 + 5))
+            path.addLine(to: CGPoint(x: rect.width * 0.5 + 5, y: rect.height * 0.5 - 5 + 5))
+            
+            path.apply(CGAffineTransform(translationX: -rect.width * 0.5, y: -rect.height * 0.5))
+            path.apply(CGAffineTransform(rotationAngle: .pi / 2.0))
+            path.apply(CGAffineTransform(translationX: rect.width * 0.5, y: rect.height * 0.5))
+            path.lineWidth = 5
+            UIColor.init(white: 0, alpha: 0.3).set()
+            path.stroke()
+            path.lineWidth = 3
+            UIColor.white.set()
+            path.stroke()
+        }
+    }
+}
 
 class ColorPickerCell: UICollectionViewCell {
     
@@ -18,7 +205,7 @@ class ColorPickerCell: UICollectionViewCell {
     /// The reuse identifier used to register the UICollectionViewCell to the UICollectionView
     static let cellIdentifier = String(describing: ColorPickerCell.self)
     /// The checkbox use to show the tip on the cell
-    var checkbox = M13Checkbox()
+    var checkbox = CheckView()
     
     lazy var gradientLayer: CAGradientLayer = {
         var l = CAGradientLayer()
@@ -35,6 +222,7 @@ class ColorPickerCell: UICollectionViewCell {
             } else {
                 gradientLayer.colors = colors.map({$0.cgColor})
             }
+            checkbox.colorCount = colors.count
         }
     }
     
@@ -66,8 +254,6 @@ class ColorPickerCell: UICollectionViewCell {
         // Setup of checkbox
         checkbox.isUserInteractionEnabled = false
         checkbox.backgroundColor = .clear
-        checkbox.hideBox = true
-        checkbox.setCheckState(.unchecked, animated: false)
         
         self.addSubview(checkbox)
         

@@ -272,12 +272,10 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-IGColorPicker_Example/Pods-IGColorPicker_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/IGColorPicker/IGColorPicker.framework",
-				"${BUILT_PRODUCTS_DIR}/M13Checkbox/M13Checkbox.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IGColorPicker.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/M13Checkbox.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

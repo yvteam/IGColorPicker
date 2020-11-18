@@ -45,6 +45,8 @@ open class ColorPickerView: UIView, UICollectionViewDelegate, UICollectionViewDa
             if colors.isEmpty {
                 fatalError("ERROR ColorPickerView - You must set at least 1 color!")
             }
+            _indexOfSelectedColor = nil
+            currentState = .uncheck
             collectionView.reloadData()
         }
     }
@@ -81,8 +83,7 @@ open class ColorPickerView: UIView, UICollectionViewDelegate, UICollectionViewDa
     /// Style applied when a color is selected
     open var selectionStyle: ColorPickerViewSelectStyle = .check
     
-    var selectedIndexPath: IndexPath?
-    var currentStartPoint: CGPoint?
+    var currentState: CheckState = .uncheck
     
     // MARK: - Private properties
     
@@ -127,73 +128,18 @@ open class ColorPickerView: UIView, UICollectionViewDelegate, UICollectionViewDa
         
         guard let colorPickerCell = collectionView.cellForItem(at: indexPath) as? ColorPickerCell else { return }
         
-        if indexPath.item == _indexOfSelectedColor, !isSelectedColorTappable {
-            return
-        }
-        
         if selectionStyle == .check {
-            
             if indexPath.item == _indexOfSelectedColor {
-                if isSelectedColorTappable {
-                    _indexOfSelectedColor = nil
-                    colorPickerCell.checkbox.setCheckState(.unchecked, animated: animated)
-                }
-                return
+                colorPickerCell.checkbox.state = colorPickerCell.checkbox.state.nextState()
+            } else {
+                _indexOfSelectedColor = indexPath.item
+                colorPickerCell.checkbox.state = .check
             }
-            
-            _indexOfSelectedColor = indexPath.item
-            
-            colorPickerCell.checkbox.tintColor = (colors[indexPath.item].first?.isWhiteText ?? false) ? .white : .black
-            colorPickerCell.checkbox.setCheckState((colorPickerCell.checkbox.checkState == .checked) ? .unchecked : .checked, animated: animated)
-            
         }
         
-        var startPoint = CGPoint.zero
-        var endPoint = CGPoint.zero
-        if selectedIndexPath == indexPath {
-            startPoint = nextPoint(currentStartPoint)
-        } else {
-            startPoint = nextPoint(nil)
-        }
-        endPoint = getEndPoint(startPoint)
-        
-        delegate?.colorPickerView(self, didSelectItemAt: indexPath, startPoint: startPoint, endPoint: endPoint)
-        
-        selectedIndexPath = indexPath
-    
-    }
-    
-    func nextPoint(_ point: CGPoint?) -> CGPoint {
-        guard let p = point else {
-            return CGPoint(x: 0.5, y: 0)
-        }
-        switch p {
-        case CGPoint(x: 0.5, y: 0):
-            return CGPoint(x: 0, y: 0)
-        case CGPoint(x: 0, y: 0):
-            return CGPoint(x: 0, y: 0.5)
-        case CGPoint(x: 0, y: 0.5):
-            return CGPoint(x: 1, y: 0)
-        case CGPoint(x: 1, y: 0):
-            return CGPoint(x: 0.5, y: 0)
-        default:
-            return CGPoint(x: 0.5, y: 0)
-        }
-    }
-    
-    func getEndPoint(_ point: CGPoint) -> CGPoint {
-        switch point {
-        case CGPoint(x: 0.5, y: 0):
-            return CGPoint(x: 0.5, y: 1)
-        case CGPoint(x: 0, y: 0):
-            return CGPoint(x: 1, y: 1)
-        case CGPoint(x: 0, y: 0.5):
-            return CGPoint(x: 1, y: 0.5)
-        case CGPoint(x: 1, y: 0):
-            return CGPoint(x: 0, y: 1)
-        default:
-            return CGPoint(x: 0.5, y: 1)
-        }
+        currentState = colorPickerCell.checkbox.state
+                 
+        delegate?.colorPickerView(self, didSelectItemAt: indexPath, startPoint: currentState.startPoint(), endPoint: currentState.endPoint())
     }
     
     // MARK: - Public Methods
@@ -232,12 +178,12 @@ open class ColorPickerView: UIView, UICollectionViewDelegate, UICollectionViewDa
         guard selectionStyle == .check else { return }
         
         guard indexPath.item == _indexOfSelectedColor else {
-            colorPickerCell.checkbox.setCheckState(.unchecked, animated: false)
+            colorPickerCell.checkbox.state = .uncheck
             return
         }
         
         colorPickerCell.checkbox.tintColor = (colors[indexPath.item].first?.isWhiteText ?? false) ? .white : .black
-        colorPickerCell.checkbox.setCheckState(.checked, animated: false)
+        colorPickerCell.checkbox.state = currentState
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -252,7 +198,7 @@ open class ColorPickerView: UIView, UICollectionViewDelegate, UICollectionViewDa
         }
         
         if selectionStyle == .check {
-            oldColorCell.checkbox.setCheckState(.unchecked, animated: true)
+            oldColorCell.checkbox.state = .uncheck
         }
         
         delegate?.colorPickerView?(self, didDeselectItemAt: indexPath)
