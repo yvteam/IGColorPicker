@@ -72,12 +72,12 @@ class CheckView: UIView {
         }
     }
     
-    var colorCount = 1
+    var withDirection = false
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         
-        if colorCount == 1 && state != .uncheck {
+        if !withDirection && state != .uncheck {
             let path = UIBezierPath()
             path.move(to: CGPoint(x: rect.width * 0.25, y: rect.height * 0.25))
             path.addLine(to: CGPoint(x: rect.width * 0.5, y: rect.height * 0.5))
@@ -214,18 +214,6 @@ class ColorPickerCell: UICollectionViewCell {
         return l
     }()
     
-    var colors: [UIColor] = [] {
-        didSet {
-            if colors.count == 1 {
-                gradientLayer.colors = nil
-                gradientLayer.backgroundColor = colors.first?.cgColor
-            } else {
-                gradientLayer.colors = colors.map({$0.cgColor})
-            }
-            checkbox.colorCount = colors.count
-        }
-    }
-    
     //MARK: - Initializer
     
     init() {
@@ -263,6 +251,18 @@ class ColorPickerCell: UICollectionViewCell {
         self.addConstraint(NSLayoutConstraint(item: checkbox, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1.0, constant: 0))
         self.addConstraint(NSLayoutConstraint(item: checkbox, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1.0, constant: 0))
         self.addConstraint(NSLayoutConstraint(item: checkbox, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailing, multiplier: 1.0, constant: 0))
+    }
+    
+    func show(_ colors: [UIColor], with direction: Bool? = nil) {
+        if colors.count == 1 {
+            gradientLayer.colors = nil
+            gradientLayer.backgroundColor = colors.first?.cgColor
+        } else {
+            gradientLayer.colors = colors.map({$0.cgColor})
+        }
+        
+        
+        checkbox.withDirection = direction ?? (colors.count > 1)
     }
     
 }
